@@ -35,13 +35,20 @@ while running:
         # If keystroke is pressed, check if its right or left
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:  # can be if event.key == pygame.K_LEFT:
-                playerX_change = -0.5
+                playerX_change = -0.35
             if event.key == pygame.K_d:  # can be if event.key == pygame.K_RIGHT:
-                playerX_change = 0.5
+                playerX_change = 0.35
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
                 playerX_change = 0
 
     playerX += playerX_change
+
+    # The conditions below prevents the player from going out of bounds of the screen.
+    if playerX <= 0:
+        playerX = 0
+    elif playerX >= 736:
+        playerX = 736
+
     player(playerX, playerY)
     pygame.display.update()
