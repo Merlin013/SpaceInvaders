@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 # initialize pygame
 pygame.init()
@@ -25,20 +26,28 @@ playerX_change = 0
 enemyImg = pygame.image.load("enemy1.png")
 enemyX = random.randint(0, 736)
 enemyY = random.randint(50, 125)
-enemyX_change = 0.8
-enemyY_change = 25
+enemyX_change = 0.4
+enemyY_change = 10
 
 # Missile image
 missileImg = pygame.image.load("missile.png")
 missileX = 0
 missileY = 480
 missileX_change = 0
-missileY_change = 1
+missileY_change = 4
 missile_state = "ready"
 
+# explosion image
+explosionImg1 = pygame.image.load("explosion.png")
+explosionImg2 = pygame.image.load("explode_big.png")
+explosionX = 0
+explosionY = 0
 
 # Ready - we can't see the bullet on the screen
 # Fire - The bullet is in motion
+
+score = 0
+
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -52,6 +61,21 @@ def fire_missile(x, y):
     global missile_state
     missile_state = "fire"
     screen.blit(missileImg, (x + 16, y + 10))
+
+
+def explode(x, y):
+    for i in range(70):
+        # screen.blit(explosionImg1, (x, y))
+        screen.blit(explosionImg2, (x, y))
+        pygame.display.update()
+
+
+def is_collision(enemyX, enemyY, missileX, missileY):
+    distance = math.sqrt((math.pow(enemyX - missileX, 2)) + math.pow(enemyY - missileY, 2))
+    if distance < 30:
+        return True
+    else:
+        return False
 
 
 # Game loop
@@ -72,7 +96,10 @@ while running:
             if event.key == pygame.K_d:  # can be if event.key == pygame.K_RIGHT:
                 playerX_change = 2
             if event.key == pygame.K_SPACE:  # can be if event.key == pygame.K_RIGHT:
-                fire_missile(playerX, missileY)
+                if missile_state == "ready":
+                    # Get the current X coordinate of thw player
+                    missileX = playerX
+                    fire_missile(missileX, missileY)
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -89,16 +116,34 @@ while running:
     # The conditions below are the same as above but for the enemy. - Enemy movement
     enemyX += enemyX_change
     if enemyX <= 0:
-        enemyX_change = 0.8
+        enemyX_change = 0.4
         enemyY += enemyY_change
     elif enemyX >= 736:
-        enemyX_change = -0.8
+        enemyX_change = -0.4
         enemyY += enemyY_change
 
     # Missile movement
+    if missileY <= 0:
+        missileY = 480
+        missile_state = "ready"
+
     if missile_state == "fire":
-        fire_missile(playerX, missileY)
+        fire_missile(missileX, missileY)
         missileY -= missileY_change
+
+    # Collision detection
+    collision = is_collision(enemyX, enemyY, missileX, missileY)
+    if collision:
+        missileY = 480
+        missile_state = "ready"
+        score += 1
+        print(score)
+        explosionX = enemyX
+        explosionY = enemyY
+        explode(explosionX, explosionY)
+
+        enemyX = random.randint(0, 736)
+        enemyY = random.randint(50, 125)
 
     player(playerX, playerY)
     enemy(enemyX, enemyY)
