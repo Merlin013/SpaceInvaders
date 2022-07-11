@@ -1,12 +1,14 @@
 import pygame
 import random
 
-
 # initialize pygame
 pygame.init()
 
 # Create the screen (width, height)
 screen = pygame.display.set_mode((800, 600))
+
+# Add background to the screen
+background = pygame.image.load("space_background.png")
 
 # Title and Icon
 pygame.display.set_caption("Space Invaders")
@@ -23,8 +25,9 @@ playerX_change = 0
 enemyImg = pygame.image.load("enemy1.png")
 enemyX = random.randint(0, 736)
 enemyY = random.randint(50, 125)
-enemyX_change = 0.3
+enemyX_change = 0.8
 enemyY_change = 25
+
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -39,7 +42,8 @@ running = True
 while running:
     # RGB - red, green, blue
     screen.fill((75, 150, 100))
-
+    # add background image to persist
+    screen.blit(background, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -47,9 +51,9 @@ while running:
         # If keystroke is pressed, check if its right or left
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:  # can be if event.key == pygame.K_LEFT:
-                playerX_change = -0.35
+                playerX_change = -2
             if event.key == pygame.K_d:  # can be if event.key == pygame.K_RIGHT:
-                playerX_change = 0.35
+                playerX_change = 2
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
                 playerX_change = 0
@@ -65,10 +69,10 @@ while running:
     # The conditions below are the same as above but for the enemy. - Enemy movement
     enemyX += enemyX_change
     if enemyX <= 0:
-        enemyX_change = 0.2
+        enemyX_change = 0.8
         enemyY += enemyY_change
     elif enemyX >= 736:
-        enemyX_change = -0.2
+        enemyX_change = -0.8
         enemyY += enemyY_change
 
     player(playerX, playerY)
