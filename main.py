@@ -23,8 +23,8 @@ playerX_change = 0
 enemyImg = pygame.image.load("enemy1.png")
 enemyX = random.randint(0, 736)
 enemyY = random.randint(50, 125)
-enemyX_change = 0
-enemyY_change = 0
+enemyX_change = 0.3
+enemyY_change = 25
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -61,6 +61,15 @@ while running:
         playerX = 0
     elif playerX >= 736:
         playerX = 736
+
+    # The conditions below are the same as above but for the enemy. - Enemy movement
+    enemyX += enemyX_change
+    if enemyX <= 0:
+        enemyX_change = 0.2
+        enemyY += enemyY_change
+    elif enemyX >= 736:
+        enemyX_change = -0.2
+        enemyY += enemyY_change
 
     player(playerX, playerY)
     enemy(enemyX, enemyY)
