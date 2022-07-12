@@ -1,6 +1,8 @@
 import pygame
 import random
 import math
+from pygame import mixer
+
 
 # initialize pygame
 pygame.init()
@@ -10,6 +12,11 @@ screen = pygame.display.set_mode((800, 600))
 
 # Add background to the screen
 background = pygame.image.load("space_background.png")
+
+# Background music
+mixer.music.load("One_Against_the_World.wav")
+mixer.music.play(-1)
+mixer.music.set_volume(0.1)
 
 # Title and Icon
 pygame.display.set_caption("Space Invaders")
@@ -36,7 +43,7 @@ for j in range(num_of_enemies):
     enemyX.append(random.randint(0, 736))
     enemyY.append(random.randint(10, 70))
     enemyX_change.append(0.5 + random.random())
-    enemyY_change.append(10)
+    enemyY_change.append(20)
 
 # Missile image
 missileImg = pygame.image.load("missile.png")
@@ -56,11 +63,17 @@ explosionY = 0
 # Fire - The bullet is in motion
 
 # Score
-
 score_value = 0
 font = pygame.font.Font("freesansbold.ttf", 25)
 textX = 10
 textY = 10
+
+# Game over text
+over_font = pygame.font.Font("freesansbold.ttf", 65)
+
+def game_over_text():
+    over_text = over_font.render("GAME OVER", True, (255, 255, 255))
+    screen.blit(over_text, (200, 250))
 
 
 def show_score(x, y):
@@ -116,7 +129,9 @@ while running:
                 playerX_change = 2
             if event.key == pygame.K_SPACE:  # can be if event.key == pygame.K_RIGHT:
                 if missile_state == "ready":
-                    # Get the current X coordinate of thw player
+                    # Get the current X coordinate of the player
+                    missile_sound = mixer.Sound("laser.wav")
+                    missile_sound.play()
                     missileX = playerX
                     fire_missile(missileX, missileY)
 
@@ -134,6 +149,14 @@ while running:
 
     # The conditions below are the same as above but for the enemy. - Enemy movement
     for i in range(num_of_enemies):
+
+        #Game over text
+        if enemyY[i] > 440:
+            for j in range(num_of_enemies):
+                enemyY[j] = 2000
+            game_over_text()
+            break
+
         enemyX[i] += enemyX_change[i]
         if enemyX[i] <= 0:
             enemyX_change[i] = 1
@@ -145,6 +168,8 @@ while running:
         # Collision detection
         collision = is_collision(enemyX[i], enemyY[i], missileX, missileY)
         if collision:
+            explosion_sound = mixer.Sound("explosion.wav")
+            explosion_sound.play()
             missileY = 480
             missile_state = "ready"
             score_value += 1
