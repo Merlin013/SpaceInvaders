@@ -3,7 +3,6 @@ import random
 import math
 from pygame import mixer
 
-
 # initialize pygame
 pygame.init()
 
@@ -14,7 +13,7 @@ screen = pygame.display.set_mode((800, 600))
 background = pygame.image.load("space_background.png")
 
 # Background music
-mixer.music.load("One_Against_the_World.wav")
+mixer.music.load("darren-curtis-pay-the-reaper.wav")
 mixer.music.play(-1)
 mixer.music.set_volume(0.1)
 
@@ -70,6 +69,7 @@ textY = 10
 
 # Game over text
 over_font = pygame.font.Font("freesansbold.ttf", 65)
+
 
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
@@ -150,7 +150,7 @@ while running:
     # The conditions below are the same as above but for the enemy. - Enemy movement
     for i in range(num_of_enemies):
 
-        #Game over text
+        # Game over text
         if enemyY[i] > 440:
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
