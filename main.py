@@ -169,7 +169,9 @@ while running:
         collision = is_collision(enemyX[i], enemyY[i], missileX, missileY)
         if collision:
             explosion_sound = mixer.Sound("explosion.wav")
+            explosion_sound.set_volume(0.1)
             explosion_sound.play()
+
             missileY = 480
             missile_state = "ready"
             score_value += 1
